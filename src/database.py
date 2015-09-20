@@ -7,9 +7,11 @@ class Database:
     user = params.db_username
     password = params.db_password
     db = params.db_name
+    port = params.db_port
 
     def __init__(self):
-        self.connection = MySQLdb.connect(self.host, self.user, self.password, self.db)
+        self.connection = MySQLdb.connect(host=self.host, user=self.user, passwd=self.password, 
+                                db=self.db, port=self.port)
         self.cursor = self.connection.cursor()
 
     def insert(self, query):
@@ -24,7 +26,6 @@ class Database:
     def query(self, query):
         cursor = self.connection.cursor( MySQLdb.cursors.DictCursor )
         cursor.execute(query)
-
         return cursor.fetchall()
 
     def __del__(self):

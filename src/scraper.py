@@ -1,18 +1,16 @@
 import requests
 from bs4 import BeautifulSoup
-import sys
-import codecs
-import MySQLdb
-
-
-sys.stdout = codecs.getwriter("iso-8859-1")(sys.stdout, 'xmlcharrefreplace')
+import logger
+import params
+import scrapers.constitucion
 
 print 'Iniciando Scraping - planalto\n'
-print 'URL : ', url
 
-response = requests.get(url)
-response.encoding = 'UTF-8'
-
-# print response.text
-
-print 'Finalizado con exito'
+response = requests.get(params.url)
+plain_text = response.text
+soup = BeautifulSoup(plain_text)
+#print '\n\n'
+#scrapers.constitucion.readPreambulo(soup)
+#print '\n\n'
+scrapers.constitucion.readContent(soup)
+print '\n\nFinalizado con exito'
