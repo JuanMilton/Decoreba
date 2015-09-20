@@ -3,17 +3,29 @@ import params
 from database import Database
 from datetime import datetime
 
-date = datetime.now()
+def info(detail):
+	__log(detail, 'INFO')
 
-db = Database()
-query = """
-        INSERT INTO scraper_log
-        (`fecha`, `tipo_log`, `detalle`)
-        VALUES
-        (%s, %s, %s)
-        """
-resp = db.cursor.execute(query, (date, 'INFO', 'Hola mundo'))
-db.connection.commit()
+def debug(detail):
+	__log(detail, 'DEBUG')
 
-print resp
-print 'OK'
+def warn(detail):
+	__log(detail, 'WARN')
+
+def error(detail):
+	__log(detail, 'ERROR')
+
+def __log(detail, level):
+	try:
+		db = Database()
+		date = datetime.now()
+		query = """
+			INSERT INTO scraper_log
+			(`fecha`, `tipo_log`, `detalle`)
+			VALUES
+			(%s, %s, %s)
+			"""
+		resp = db.cursor.execute(query, (date, level, detail))
+		db.connection.commit()
+	except Exception, e:
+		raise
