@@ -1,21 +1,9 @@
 import MySQLdb
-import params
-from dao.database import Database
+from ... import params
+from database import Database
 from datetime import datetime
 
-def info(detail):
-	__log(detail, 'INFO')
-
-def debug(detail):
-	__log(detail, 'DEBUG')
-
-def warn(detail):
-	__log(detail, 'WARN')
-
-def error(detail):
-	__log(detail, 'ERROR')
-
-def __log(detail, level):
+def insert(titulo, descripcion=None, id_segmento, fecha, version):
 	try:
 		db = Database()
 		date = datetime.now()

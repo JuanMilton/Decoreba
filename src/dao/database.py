@@ -1,5 +1,5 @@
 import MySQLdb
-import params
+from ... import params
 
 class Database:
 

@@ -1,4 +1,4 @@
-url = 'http://192.168.1.105/legislacion/Constituicao'
+url = 'http://192.168.1.105/legislacion/Constituicao/particion'
 #url = 'http://192.168.1.105/pruebas/'
 #url = 'http://www.planalto.gov.br/ccivil_03/Constituicao/Constituicao.htm'
 
