@@ -1,8 +1,10 @@
 # -*- coding: latin-1 -*-
 
+import os.path, sys
 from bs4 import BeautifulSoup
 import hard_code_util
-import segmentoDAO
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
+import dao.segmentoDAO
 
 ley_id = 0
 last_titulo_id = 0

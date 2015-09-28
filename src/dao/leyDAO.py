@@ -1,7 +1,9 @@
+import os.path, sys
 import MySQLdb
-from ... import params
-from database import Database
 from datetime import datetime
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
+import params
+from dao.database import Database
 
 def insert(titulo, descripcion=None, id_segmento, fecha, version):
 	try:

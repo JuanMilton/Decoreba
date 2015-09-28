@@ -1,4 +1,6 @@
+import os.path, sys
 import MySQLdb
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
 import params
 
 class Database:
