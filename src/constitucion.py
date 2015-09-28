@@ -1,7 +1,14 @@
 # -*- coding: latin-1 -*-
 
 from bs4 import BeautifulSoup
-from scrapers import hard_code_util
+import hard_code_util
+import segmentoDAO
+
+ley_id = 0
+last_titulo_id = 0
+last_capitulo_id = 0
+last_seccion_id = 0
+last_subseccion_id = 0
 
 def __separarTituloCompuesto(soup):
 	tags_a = soup.find_all(['a'])
@@ -48,6 +55,11 @@ def __isTituloCompuesto(soup):
 
 ''' Metodo principal para cada parrafo (p) a procesar '''
 def __procesarParrafo(soup):
+	global ley_id
+	global last_titulo_id
+	global last_capitulo_id
+	global last_seccion_id
+	global last_subseccion_id
 	if (__isTitulo(soup)):
 		if (__isTituloCompuesto(soup)):
 			resp = __separarTituloCompuesto(soup) # resp es una lista de partes, cada parte es un tag
@@ -55,13 +67,13 @@ def __procesarParrafo(soup):
 				__procesarParrafo(p)
 		else :
 			if hard_code_util.isTitulo(soup.text):
-				print 'TITULO : ', soup
+				last_titulo_id = segmentoDAO.insert(str(soup), segmentoDAO.TIPO_TITULO, ley_id)
 			elif hard_code_util.isCapitulo(soup.text):
-				print 'CAPITULO : ', soup
+				last_capitulo_id = segmentoDAO.insert(str(soup), segmentoDAO.TIPO_CAPITULO, last_titulo_id)
 			elif hard_code_util.isSeccion(soup.text):
-				print 'SECCION : ', soup
+				last_seccion_id = segmentoDAO.insert(str(soup), segmentoDAO.TIPO_SECCION, last_capitulo_id)
 			elif hard_code_util.isSubSeccion(soup.text):
-				print 'SUBSECCION : ', soup
+				last_subseccion_id = segmentoDAO.insert(str(soup), segmentoDAO.TIPO_SUBSECCION, last_seccion_id)
 
 
 def readPreambulo(soup):
@@ -71,6 +83,8 @@ def readPreambulo(soup):
 	print preambulo_body.string
 
 def readContent(soup):
+	global ley_id
+	ley_id = segmentoDAO.insert('<p align="center"><a href="https://legislacao.planalto.gov.br/legisla/legislacao.nsf/viwTodos/509f2321d97cd2d203256b280052245a?OpenDocument&amp;Highlight=1,constitui%C3%A7%C3%A3o&amp;AutoFramed"><font face="Arial" color="#0000FF" size="2"><b>CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL DE 1988</b></font></a></p>', segmentoDAO.TIPO_LEY)
 	titulo = soup.find('p', {'align': 'center'})
 	next = titulo
 	while next is not None:

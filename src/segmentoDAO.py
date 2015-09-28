@@ -1,7 +1,5 @@
 import MySQLdb
-import sys
 from database import Database
-sys.path.append("..")
 import params
 
 TIPO_LEY = 'LEY'
@@ -23,10 +21,8 @@ def insert(contenido, tipo, id_parent=None):
 			"""
 		resp = db.cursor.execute(query, (contenido, tipo, id_parent))
 		db.connection.commit()
-		return resp.lastrowid
+		if resp == 1:
+			return db.cursor.lastrowid
 	except Exception, e:
 		raise
-		return None
-
-resp = insert('HOLA MUNDO', TIPO_LEY)
-print resp
+	return None

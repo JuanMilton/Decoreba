@@ -1,6 +1,6 @@
 import MySQLdb
 import params
-from dao.database import Database
+from database import Database
 from datetime import datetime
 
 def info(detail):
