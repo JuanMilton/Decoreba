@@ -69,13 +69,13 @@ def __procesarParrafo(soup):
 				__procesarParrafo(p)
 		else :
 			if hard_code_util.isTitulo(soup.text):
-				last_titulo_id = segmentoDAO.insert(str(soup), segmentoDAO.TIPO_TITULO, ley_id)
+				last_titulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_TITULO, ley_id)
 			elif hard_code_util.isCapitulo(soup.text):
-				last_capitulo_id = segmentoDAO.insert(str(soup), segmentoDAO.TIPO_CAPITULO, last_titulo_id)
+				last_capitulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_CAPITULO, last_titulo_id)
 			elif hard_code_util.isSeccion(soup.text):
-				last_seccion_id = segmentoDAO.insert(str(soup), segmentoDAO.TIPO_SECCION, last_capitulo_id)
+				last_seccion_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_SECCION, last_capitulo_id)
 			elif hard_code_util.isSubSeccion(soup.text):
-				last_subseccion_id = segmentoDAO.insert(str(soup), segmentoDAO.TIPO_SUBSECCION, last_seccion_id)
+				last_subseccion_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_SUBSECCION, last_seccion_id)
 
 
 def readPreambulo(soup):
@@ -86,7 +86,7 @@ def readPreambulo(soup):
 
 def readContent(soup):
 	global ley_id
-	ley_id = segmentoDAO.insert('<p align="center"><a href="https://legislacao.planalto.gov.br/legisla/legislacao.nsf/viwTodos/509f2321d97cd2d203256b280052245a?OpenDocument&amp;Highlight=1,constitui%C3%A7%C3%A3o&amp;AutoFramed"><font face="Arial" color="#0000FF" size="2"><b>CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL DE 1988</b></font></a></p>', segmentoDAO.TIPO_LEY)
+	ley_id = dao.segmentoDAO.insert('<p align="center"><a href="https://legislacao.planalto.gov.br/legisla/legislacao.nsf/viwTodos/509f2321d97cd2d203256b280052245a?OpenDocument&amp;Highlight=1,constitui%C3%A7%C3%A3o&amp;AutoFramed"><font face="Arial" color="#0000FF" size="2"><b>CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL DE 1988</b></font></a></p>', dao.segmentoDAO.TIPO_LEY)
 	titulo = soup.find('p', {'align': 'center'})
 	next = titulo
 	while next is not None:

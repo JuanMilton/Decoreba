@@ -12,5 +12,5 @@ soup = BeautifulSoup(plain_text)
 #print '\n\n'
 #scrapers.constitucion.readPreambulo(soup)
 #print '\n\n'
-constitucion.readContent(soup)
+scrapers.constitucion.readContent(soup)
 print '\n\nFinalizado con exito'
