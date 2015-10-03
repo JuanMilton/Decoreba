@@ -4,13 +4,9 @@ import logger
 import params
 import scrapers.constitucion
 
-print 'Iniciando Scraping - planalto\n'
-
+logger.info('Iniciando Scraping - planalto')
 response = requests.get(params.url)
 plain_text = response.text
 soup = BeautifulSoup(plain_text)
-#print '\n\n'
-#scrapers.constitucion.readPreambulo(soup)
-#print '\n\n'
-scrapers.constitucion.readContent(soup)
-print '\n\nFinalizado con exito'
+scrapers.constitucion.procesarConstitucion(soup)
+logger.info('Finalizado ')

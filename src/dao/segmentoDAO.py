@@ -11,6 +11,8 @@ TIPO_SECCION = 'SECCION'
 TIPO_SUBSECCION = 'SUBSECCION'
 TIPO_ARTICULO = 'ARTICULO'
 TIPO_ITEM_ARTICULO = 'ITEM_ARTICULO'
+TIPO_FOOTER = 'FOOTER'
+TIPO_HEADER = 'HEADER'
 
 def insert(contenido, tipo, id_parent=None):
 	try:
@@ -21,7 +23,7 @@ def insert(contenido, tipo, id_parent=None):
 			VALUES
 			(%s, %s, %s)
 			"""
-		resp = db.cursor.execute(query, (contenido, tipo, id_parent))
+		resp = db.cursor.execute(query, (contenido.decode('utf-8'), tipo, id_parent))
 		db.connection.commit()
 		if resp == 1:
 			return db.cursor.lastrowid
