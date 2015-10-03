@@ -14,19 +14,31 @@ TIPO_ITEM_ARTICULO = 'ITEM_ARTICULO'
 TIPO_FOOTER = 'FOOTER'
 TIPO_HEADER = 'HEADER'
 
-def insert(contenido, tipo, id_parent=None):
+def insert(contenido, tipo, id_ley, id_parent=None, identificador=None):
 	try:
 		db = Database()
 		query = """
 			INSERT INTO segmento
-			(`contenido`, `tipo`, `id_parent`)
+			(`contenido`, `tipo`, `id_parent`, `id_ley`, `identificador`)
 			VALUES
-			(%s, %s, %s)
+			(%s, %s, %s, %s, %s)
 			"""
-		resp = db.cursor.execute(query, (contenido.decode('utf-8'), tipo, id_parent))
+		resp = db.cursor.execute(query, (contenido.decode('utf-8'), tipo, id_parent, id_ley, identificador))
 		db.connection.commit()
 		if resp == 1:
 			return db.cursor.lastrowid
 	except Exception, e:
 		raise
 	return None
+
+def deleteSegmentos(id_ley):
+	try:
+		db = Database()
+		query = """
+			DELETE FROM segmento
+			WHERE id = %s OR id_ley = %s
+			"""
+		db.cursor.execute(query, (id_ley, id_ley))
+		db.connection.commit()
+	except Exception, e:
+		raise

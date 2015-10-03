@@ -19,6 +19,13 @@ last_articulo_id = 0
 start_articles = False
 end_of_code = ''
 
+cont_titulo = 0
+cont_capitulo = 0
+cont_seccion = 0
+cont_subseccion = 0
+cont_articulo = 0
+
+
 def __separarTituloCompuesto(soup):
 	tags_a = soup.find_all(['a'])
 	tags_name = []
@@ -68,7 +75,7 @@ def __isTituloCompuesto(soup):
 
 ''' Metodo principal para cada parrafo (p) a procesar '''
 def __procesarParrafo(soup):
-	global ley_id, last_titulo_id, last_capitulo_id, last_seccion_id, last_subseccion_id, last_segmento_id, last_articulo_id, start_articles, end_of_code
+	global ley_id, last_titulo_id, last_capitulo_id, last_seccion_id, last_subseccion_id, last_segmento_id, last_articulo_id, start_articles, end_of_code, cont_titulo, cont_capitulo, cont_seccion, cont_subseccion, cont_articulo
 	if (__isTitulo(soup)):
 		if (__isTituloCompuesto(soup)):
 			resp = __separarTituloCompuesto(soup) # resp es una lista de partes, cada parte es un tag
@@ -76,44 +83,74 @@ def __procesarParrafo(soup):
 				__procesarParrafo(p)
 		else :
 			if hard_code_util.isTitulo(soup.text):
-				last_titulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_TITULO, ley_id)
+				cont_capitulo = 0
+				cont_seccion = 0
+				cont_subseccion = 0	
+				cont_titulo += 1
+				last_titulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_TITULO, ley_id, ley_id, 'titulo' + str(cont_titulo))
 				last_segmento_id = last_titulo_id
 			elif hard_code_util.isCapitulo(soup.text):
-				last_capitulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_CAPITULO, last_titulo_id)
+				cont_seccion = 0
+				cont_subseccion = 0
+				cont_capitulo += 1
+				last_capitulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_CAPITULO, ley_id, last_titulo_id, 'titulo' + str(cont_titulo) + "|capitulo" + str(cont_capitulo))
 				last_segmento_id = last_capitulo_id
 			elif hard_code_util.isSeccion(soup.text):
-				last_seccion_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_SECCION, last_capitulo_id)
+				cont_subseccion = 0
+				cont_seccion += 1
+				cad = 'titulo' + str(cont_titulo)
+				if cont_capitulo > 0:
+					cad += "|capitulo" + str(cont_capitulo)
+				cad += '|seccion' + str(cont_seccion)
+				last_seccion_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_SECCION, ley_id, last_capitulo_id, cad)
 				last_segmento_id = last_seccion_id
 			elif hard_code_util.isSubSeccion(soup.text):
-				last_subseccion_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_SUBSECCION, last_seccion_id)
+				cont_subseccion += 1
+				cad = 'titulo' + str(cont_titulo)
+				if cont_capitulo > 0:
+					cad += "|capitulo" + str(cont_capitulo)
+				if cont_seccion > 0:
+					cad += '|seccion' + str(cont_seccion)
+				cad += '|subseccion' + str(cont_subseccion)
+				last_subseccion_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_SUBSECCION, ley_id, last_seccion_id, cad)
 				last_segmento_id = last_subseccion_id
 	else:
 		if hard_code_util.isArticulo(soup.text):
-			last_articulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_ARTICULO, last_segmento_id)
+			cont_articulo += 1
+			cad = 'titulo' + str(cont_titulo)
+			if cont_capitulo > 0:
+				cad += "|capitulo" + str(cont_capitulo)
+			if cont_seccion > 0:
+				cad += '|seccion' + str(cont_seccion)
+			if cont_subseccion > 0:
+				cad += '|subseccion' + str(cont_subseccion)
+			cad += '|articulo' + str(cont_articulo)
+			last_articulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_ARTICULO, ley_id, last_segmento_id, cad)
 			start_articles = True
 		elif start_articles:
 			if hard_code_util.startEnd(soup.text) or len(end_of_code) > 0:
 				end_of_code += str(soup)
 			else:
 				if not __isTitulo(soup):
-					dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_ITEM_ARTICULO, last_articulo_id)
+					dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_ITEM_ARTICULO, ley_id, last_articulo_id)
 
 def readPreambulo(soup):
 	global ley_id
 	preambulo_head = soup.find('font', {'color': '#800000'})
 	preambulo_body = preambulo_head.find_next().find('font', {'size':'2'})
 	preambulo = str(preambulo_head) + str(preambulo_body)
-	id_header = dao.segmentoDAO.insert(preambulo, dao.segmentoDAO.TIPO_HEADER, ley_id)	
+	id_header = dao.segmentoDAO.insert(preambulo, dao.segmentoDAO.TIPO_HEADER, ley_id, ley_id)	
 	logger.info('Preambulo registrado correctamente, ID = ' + str(id_header))
 
 def procesarConstitucion(soup):
 	try:
 		global ley_id, end_of_code
-		ley_id = dao.segmentoDAO.insert('<p align="center"><a href="https://legislacao.planalto.gov.br/legisla/legislacao.nsf/viwTodos/509f2321d97cd2d203256b280052245a?OpenDocument&amp;Highlight=1,constitui%C3%A7%C3%A3o&amp;AutoFramed"><font face="Arial" color="#0000FF" size="2"><b>CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL DE 1988</b></font></a></p>', dao.segmentoDAO.TIPO_LEY)
+		id_ley = dao.leyDAO.selectIDSegmento(hard_code_util.ID_LEGISLACION_CONSTITUCION)
+		dao.segmentoDAO.deleteSegmentos(id_ley)
+		dao.leyDAO.deleteLey(hard_code_util.ID_LEGISLACION_CONSTITUCION)
+		ley_id = dao.segmentoDAO.insert('<p align="center"><a href="https://legislacao.planalto.gov.br/legisla/legislacao.nsf/viwTodos/509f2321d97cd2d203256b280052245a?OpenDocument&amp;Highlight=1,constitui%C3%A7%C3%A3o&amp;AutoFramed"><font face="Arial" color="#0000FF" size="2"><b>CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL DE 1988</b></font></a></p>', dao.segmentoDAO.TIPO_LEY, None)
 		logger.info('Segmento - Ley registrada correctamente, ID = ' + str(ley_id))
-		version = dao.leyDAO.getVersion(hard_code_util.ID_LEGISLACION_CONSTITUCION)
-		version += 1
-		dao.leyDAO.insert('CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL DE 1988', '', ley_id, datetime.now(), version, hard_code_util.ID_LEGISLACION_CONSTITUCION)
+		dao.leyDAO.insert('CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL DE 1988', '', ley_id, datetime.now(), hard_code_util.ID_LEGISLACION_CONSTITUCION)
 		logger.info('Ley registrada correctamente')
 		readPreambulo(soup)
 		titulo = soup.find('p', {'align': 'center'})
@@ -122,7 +159,7 @@ def procesarConstitucion(soup):
 			if next.name == 'p':
 				__procesarParrafo(next)
 			next = next.find_next()
-		id_footer = dao.segmentoDAO.insert(end_of_code, dao.segmentoDAO.TIPO_FOOTER, ley_id)
+		id_footer = dao.segmentoDAO.insert(end_of_code, dao.segmentoDAO.TIPO_FOOTER, ley_id, ley_id)
 		logger.info('Se registro el footer, ID = ' + str(id_footer))
 	except Exception, e:
 		logger.error('Error general : ' + str(e))

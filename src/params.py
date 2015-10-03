@@ -1,6 +1,5 @@
 url = 'http://192.168.1.105/legislacion/Constituicao/particion'
-#url = 'http://192.168.1.105/pruebas/'
-#url = 'http://www.planalto.gov.br/ccivil_03/Constituicao/Constituicao.htm'
+#url = 'http://192.168.1.105/legislacion/Codigos/codigo_civil'
 
 db_host = '192.168.1.105'
 db_port = 3306
