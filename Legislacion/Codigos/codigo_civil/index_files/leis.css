@@ -1,0 +1,21 @@
+/*  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
+
+#art2 {
+	font-family: Arial, sans-serif;
+	font-weight: normal;
+	font-size: x-small;
+	padding-left: 0px;
+	text-align: justify;
+	text-indent: 32px;
+	color: #000000;
+}
+td.t1	{
+	font-family: Arial, sans-serif;
+	font-weight: normal;
+	font-size: x-small;
+	width:462;
+	height:16;
+	vertical-align:top;
+	padding-left: 0px;
+	padding-top: 0px;
+}
