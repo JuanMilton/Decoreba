@@ -2,21 +2,31 @@
 from bs4 import BeautifulSoup
 
 ID_LEGISLACION_CONSTITUCION = 1
+ID_LEGISLACION_CODIGO_CIVIL = 2
+
+def isParte(text):
+	return text is not None and 'P A R T E' in text.encode('utf-8')
+
+def isLibro(text):
+	return text is not None and 'LIVRO' in text.encode('utf-8')
+
+def isSubTitulo(text):
+	return text is not None and 'SUBTÍTULO' in text.encode('utf-8')
 
 def isTitulo(text):
-	return text is not None and 'título' in text.lower().encode('utf-8')
+	return text is not None and 'TÍTULO' in text.encode('utf-8')
 
 def isCapitulo(text):
-	return text is not None and 'capítulo' in text.lower().encode('utf-8')
+	return text is not None and 'CAPÍTULO' in text.encode('utf-8')
 
 def isSeccion(text):
-	return text is not None and 'seção' in text.lower().encode('utf-8')
+	return text is not None and 'Seção' in text.encode('utf-8')
 
 def isSubSeccion(text):
-	return text is not None and 'subseção' in text.lower().encode('utf-8')
+	return text is not None and 'Subseção' in text.encode('utf-8')
 
 def isArticulo(text):
 	return text is not None and text.strip().startswith('Art.')
 
-def startEnd(text):
+def startEndConstitucion(text):
 	return text is not None and '5 de outubro de 1988.' in text.encode('utf-8')

@@ -116,7 +116,6 @@ def __procesarParrafo(soup):
 				last_segmento_id = last_subseccion_id
 	else:
 		if hard_code_util.isArticulo(soup.text):
-			cont_articulo += 1
 			cad = 'titulo' + str(cont_titulo)
 			if cont_capitulo > 0:
 				cad += "|capitulo" + str(cont_capitulo)
@@ -124,11 +123,14 @@ def __procesarParrafo(soup):
 				cad += '|seccion' + str(cont_seccion)
 			if cont_subseccion > 0:
 				cad += '|subseccion' + str(cont_subseccion)
-			cad += '|articulo' + str(cont_articulo)
-			last_articulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_ARTICULO, ley_id, last_segmento_id, cad)
+			if soup.find('strike') is None:
+				cont_articulo += 1
+				last_articulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_ARTICULO, ley_id, last_segmento_id, cad + '|articulo' + str(cont_articulo))
+			else:
+				last_articulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_ARTICULO, ley_id, last_segmento_id, cad + '|articulo' + str(cont_articulo + 1) + '-')
 			start_articles = True
 		elif start_articles:
-			if hard_code_util.startEnd(soup.text) or len(end_of_code) > 0:
+			if hard_code_util.startEndConstitucion(soup.text) or len(end_of_code) > 0:
 				end_of_code += str(soup)
 			else:
 				if not __isTitulo(soup):
