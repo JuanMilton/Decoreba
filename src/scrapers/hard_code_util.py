@@ -28,5 +28,18 @@ def isSubSeccion(text):
 def isArticulo(text):
 	return text is not None and text.strip().startswith('Art.')
 
+def getNumeroTitular(text):
+	if text is None:
+		return '0'
+	if isParte(text):
+		cad = text.replace(' ', '')
+		return cad.split()[1]
+	return text.split()[1]
+
+def getNumeroArticulo(text):
+	if text is None:
+		return '0'
+	return text.split()[1][:-1]
+
 def startEndConstitucion(text):
 	return text is not None and '5 de outubro de 1988.' in text.encode('utf-8')
