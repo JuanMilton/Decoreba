@@ -19,12 +19,15 @@ last_articulo_id = 0
 start_articles = False
 end_of_code = ''
 
-cont_titulo = 0
-cont_capitulo = 0
-cont_seccion = 0
-cont_subseccion = 0
-cont_articulo = 0
+last_titulo = ''
+last_capitulo = ''
+last_seccion = ''
+last_subseccion = ''
+last_articulo = ''
 
+idnetificador_articulo = ''
+articulo_completo = ''
+id_parent_articulo = 0
 
 def __separarTituloCompuesto(soup):
 	tags_a = soup.find_all(['a'])
@@ -75,66 +78,77 @@ def __isTituloCompuesto(soup):
 
 ''' Metodo principal para cada parrafo (p) a procesar '''
 def __procesarParrafo(soup):
-	global ley_id, last_titulo_id, last_capitulo_id, last_seccion_id, last_subseccion_id, last_segmento_id, last_articulo_id, start_articles, end_of_code, cont_titulo, cont_capitulo, cont_seccion, cont_subseccion, cont_articulo
+	global ley_id, last_titulo_id, last_capitulo_id, last_seccion_id, last_subseccion_id, last_segmento_id, last_articulo_id, start_articles, end_of_code, last_titulo, last_capitulo, last_seccion, last_subseccion, last_articulo, articulo_completo, idnetificador_articulo, id_parent_articulo
 	if (__isTitulo(soup)):
 		if (__isTituloCompuesto(soup)):
 			resp = __separarTituloCompuesto(soup) # resp es una lista de partes, cada parte es un tag
 			for p in resp:
 				__procesarParrafo(p)
 		else :
+			if articulo_completo != '':
+				dao.segmentoDAO.insert(articulo_completo, dao.segmentoDAO.TIPO_ARTICULO, ley_id, id_parent_articulo, idnetificador_articulo)
+				idnetificador_articulo = ''
+				articulo_completo = ''
+			numeracion = hard_code_util.getNumeroTitular(soup.text)
 			if hard_code_util.isTitulo(soup.text):
-				cont_capitulo = 0
-				cont_seccion = 0
-				cont_subseccion = 0	
-				cont_titulo += 1
-				last_titulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_TITULO, ley_id, ley_id, 'titulo' + str(cont_titulo))
-				last_segmento_id = last_titulo_id
+				last_titulo = last_capitulo = last_seccion = last_subseccion = ''
+				last_titulo = numeracion
+				last_segmento_id = last_titulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_TITULO, ley_id, ley_id, 'titulo' + last_titulo)
 			elif hard_code_util.isCapitulo(soup.text):
-				cont_seccion = 0
-				cont_subseccion = 0
-				cont_capitulo += 1
-				last_capitulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_CAPITULO, ley_id, last_titulo_id, 'titulo' + str(cont_titulo) + "|capitulo" + str(cont_capitulo))
-				last_segmento_id = last_capitulo_id
+				last_seccion = last_subseccion = ''
+				last_capitulo = numeracion
+				last_segmento_id = last_capitulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_CAPITULO, ley_id, last_titulo_id, 'titulo' + last_titulo + "_capitulo" + last_capitulo)
 			elif hard_code_util.isSeccion(soup.text):
-				cont_subseccion = 0
-				cont_seccion += 1
-				cad = 'titulo' + str(cont_titulo)
-				if cont_capitulo > 0:
-					cad += "|capitulo" + str(cont_capitulo)
-				cad += '|seccion' + str(cont_seccion)
-				last_seccion_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_SECCION, ley_id, last_capitulo_id, cad)
-				last_segmento_id = last_seccion_id
+				last_subseccion = ''
+				last_seccion = numeracion
+				cad = 'titulo' + last_titulo
+				id_parent = last_titulo_id
+				if last_capitulo != '':
+					cad += "_capitulo" + last_capitulo
+					id_parent = last_capitulo_id
+				cad += '_seccion' + last_seccion
+				last_segmento_id = last_seccion_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_SECCION, ley_id, id_parent, cad)
 			elif hard_code_util.isSubSeccion(soup.text):
-				cont_subseccion += 1
-				cad = 'titulo' + str(cont_titulo)
-				if cont_capitulo > 0:
-					cad += "|capitulo" + str(cont_capitulo)
-				if cont_seccion > 0:
-					cad += '|seccion' + str(cont_seccion)
-				cad += '|subseccion' + str(cont_subseccion)
-				last_subseccion_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_SUBSECCION, ley_id, last_seccion_id, cad)
+				last_subseccion = numeracion
+				cad = 'titulo' + last_titulo
+				id_parent = last_titulo_id
+				if last_capitulo != '':
+					cad += "_capitulo" + last_capitulo
+					id_parent = last_capitulo_id
+				if last_seccion != '':
+					cad += '_seccion' + last_seccion
+					id_parent = last_seccion_id
+				cad += '_subseccion' + last_subseccion
+				last_subseccion_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_SUBSECCION, ley_id, id_parent, cad)
 				last_segmento_id = last_subseccion_id
 	else:
 		if hard_code_util.isArticulo(soup.text):
-			cad = 'titulo' + str(cont_titulo)
-			if cont_capitulo > 0:
-				cad += "|capitulo" + str(cont_capitulo)
-			if cont_seccion > 0:
-				cad += '|seccion' + str(cont_seccion)
-			if cont_subseccion > 0:
-				cad += '|subseccion' + str(cont_subseccion)
-			if soup.find('strike') is None:
-				cont_articulo += 1
-				last_articulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_ARTICULO, ley_id, last_segmento_id, cad + '|articulo' + str(cont_articulo))
-			else:
-				last_articulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_ARTICULO, ley_id, last_segmento_id, cad + '|articulo' + str(cont_articulo + 1) + '-')
+			cad = 'titulo' + last_titulo
+			id_parent = last_titulo_id
+			if last_capitulo != '':
+				cad += "_capitulo" + last_capitulo
+				id_parent = last_capitulo_id
+			if last_seccion != '':
+				cad += '_seccion' + last_seccion
+				id_parent = last_seccion_id
+			if last_subseccion != '':
+				cad += '_subseccion' + last_subseccion
+				id_parent = last_subseccion_id
+			cad += '_articulo' + hard_code_util.getNumeroArticulo(soup.text)
+			if soup.find('strike') is not None:
+				 cad += '-'
+			if articulo_completo != '':
+				dao.segmentoDAO.insert(articulo_completo, dao.segmentoDAO.TIPO_ARTICULO, ley_id, id_parent, idnetificador_articulo)
+				id_parent_articulo = id_parent
+			idnetificador_articulo = cad
+			articulo_completo = str(soup)
 			start_articles = True
 		elif start_articles:
 			if hard_code_util.startEndConstitucion(soup.text) or len(end_of_code) > 0:
 				end_of_code += str(soup)
 			else:
 				if not __isTitulo(soup):
-					dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_ITEM_ARTICULO, ley_id, last_articulo_id)
+					articulo_completo += str(soup)
 
 def readPreambulo(soup):
 	global ley_id
@@ -143,8 +157,9 @@ def readPreambulo(soup):
 	preambulo = str(preambulo_head) + str(preambulo_body)
 	id_header = dao.segmentoDAO.insert(preambulo, dao.segmentoDAO.TIPO_HEADER, ley_id, ley_id)	
 	logger.info('Preambulo registrado correctamente, ID = ' + str(id_header))
+	return preambulo_body.find_next('p')
 
-def procesarConstitucion(soup):
+def procesarLegislacion(soup):
 	try:
 		global ley_id, end_of_code
 		id_ley = dao.leyDAO.selectIDSegmento(hard_code_util.ID_LEGISLACION_CONSTITUCION)
@@ -154,13 +169,13 @@ def procesarConstitucion(soup):
 		logger.info('Segmento - Ley registrada correctamente, ID = ' + str(ley_id))
 		dao.leyDAO.insert('CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL DE 1988', '', ley_id, datetime.now(), hard_code_util.ID_LEGISLACION_CONSTITUCION)
 		logger.info('Ley registrada correctamente')
-		readPreambulo(soup)
-		titulo = soup.find('p', {'align': 'center'})
-		next = titulo
+		soup_inicial = readPreambulo(soup)
+		#titulo = soup.find('p', {'align': 'center'})
+		print soup_inicial,'\n'
+		next = soup_inicial
 		while next is not None:
-			if next.name == 'p':
-				__procesarParrafo(next)
-			next = next.find_next()
+			__procesarParrafo(next)
+			next = next.find_next('p')
 		id_footer = dao.segmentoDAO.insert(end_of_code, dao.segmentoDAO.TIPO_FOOTER, ley_id, ley_id)
 		logger.info('Se registro el footer, ID = ' + str(id_footer))
 	except Exception, e:

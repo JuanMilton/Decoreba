@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 
 ID_LEGISLACION_CONSTITUCION = 1
 ID_LEGISLACION_CODIGO_CIVIL = 2
+ID_LEGISLACION_CODIGO_PROCESAL_CIVIL_1 = 3
 
 def isParte(text):
 	return text is not None and 'P A R T E' in text.encode('utf-8')
@@ -31,10 +32,9 @@ def isArticulo(text):
 def getNumeroTitular(text):
 	if text is None:
 		return '0'
-	if isParte(text):
-		cad = text.replace(' ', '')
-		return cad.split()[1]
-	return text.split()[1]
+	if len(text.split()) > 1:
+		return text.split()[1]
+	return None
 
 def getNumeroArticulo(text):
 	if text is None:

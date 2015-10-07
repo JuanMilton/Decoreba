@@ -1,5 +1,6 @@
 #url = 'http://192.168.1.105/legislacion/Constituicao/particion'
-url = 'http://192.168.1.105/legislacion/Codigos/codigo_civil'
+#url = 'http://192.168.1.105/legislacion/Codigos/codigo_civil'
+url = 'http://192.168.1.105/legislacion/Codigos/codigo_procesal_civil_1'
 
 db_host = '192.168.1.105'
 db_port = 3306

@@ -10,7 +10,6 @@ import dao.leyDAO
 import logger
 
 ley_id = 0
-last_parte_id = 0
 last_libro_id = 0
 last_titulo_id = 0
 last_subtitulo_id = 0
@@ -21,7 +20,6 @@ last_segmento_id = 0
 start_articles = False
 end_of_code = ''
 
-last_parte = ''
 last_libro = ''
 last_titulo = ''
 last_subtitulo = ''
@@ -44,33 +42,29 @@ def __isTitulo(soup):
 
 ''' Metodo principal para cada parrafo (p) a procesar '''
 def __procesarParrafo(soup):
-	global ley_id, last_parte_id, last_libro_id, last_titulo_id, last_subtitulo_id, last_capitulo_id, last_seccion_id, last_subseccion_id, last_segmento_id, start_articles, end_of_code, last_parte, last_libro, last_titulo, last_subtitulo, last_capitulo, last_seccion, last_subseccion, articulo_completo, idnetificador_articulo, id_parent_articulo
+	global ley_id, last_libro_id, last_titulo_id, last_subtitulo_id, last_capitulo_id, last_seccion_id, last_subseccion_id, last_segmento_id, start_articles, end_of_code, last_libro, last_titulo, last_subtitulo, last_capitulo, last_seccion, last_subseccion, articulo_completo, idnetificador_articulo, id_parent_articulo
 	if (__isTitulo(soup)):
 		if articulo_completo != '':
 			dao.segmentoDAO.insert(articulo_completo, dao.segmentoDAO.TIPO_ARTICULO, ley_id, id_parent_articulo, idnetificador_articulo)
 			idnetificador_articulo = ''
 			articulo_completo = ''
 		numeracion = hard_code_util.getNumeroTitular(soup.text)
-		if hard_code_util.isParte(soup.text):
-			last_libro = last_titulo = last_subtitulo = last_capitulo = last_seccion = last_subseccion = ''
-			last_parte = numeracion
-			last_segmento_id = last_parte_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_PARTE, ley_id, ley_id, 'parte' + last_parte)
-		elif hard_code_util.isLibro(soup.text):
+		if hard_code_util.isLibro(soup.text):
 			last_titulo = last_subtitulo = last_capitulo = last_seccion = last_subseccion = ''
 			last_libro = numeracion
-			last_segmento_id = last_libro_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_LIBRO, ley_id, last_parte_id,'parte' + last_parte + '_libro' + last_libro)
+			last_segmento_id = last_libro_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_LIBRO, ley_id, ley_id,'libro' + last_libro)
 		elif hard_code_util.isSubTitulo(soup.text):
 			last_capitulo = last_seccion = last_subseccion = ''
 			last_subtitulo = numeracion
-			last_segmento_id = last_subtitulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_SUBTITULO, ley_id, last_titulo_id, 'parte' + last_parte + '_libro' + last_libro + '_titulo' + last_titulo + '_subtitulo' + last_subtitulo)
+			last_segmento_id = last_subtitulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_SUBTITULO, ley_id, last_titulo_id, 'libro' + last_libro + '_titulo' + last_titulo + '_subtitulo' + last_subtitulo)
 		elif hard_code_util.isTitulo(soup.text):
 			last_subtitulo = last_capitulo = last_seccion = last_subseccion = ''
 			last_titulo = numeracion
-			last_segmento_id = last_titulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_TITULO, ley_id, last_libro_id, 'parte' + last_parte + '_libro' + last_libro + '_titulo' + last_titulo)
+			last_segmento_id = last_titulo_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_TITULO, ley_id, last_libro_id, 'libro' + last_libro + '_titulo' + last_titulo)
 		elif hard_code_util.isCapitulo(soup.text):
 			last_seccion = last_subseccion = ''
 			last_capitulo = numeracion
-			cad = 'parte' + last_parte + '_libro' + last_libro + '_titulo' + last_titulo
+			cad = 'libro' + last_libro + '_titulo' + last_titulo
 			id_parent = last_titulo_id
 			if last_subtitulo != '':
 				cad += "_subtitulo" + last_subtitulo
@@ -80,7 +74,7 @@ def __procesarParrafo(soup):
 		elif hard_code_util.isSeccion(soup.text):
 			last_subseccion = ''
 			last_seccion = numeracion
-			cad = 'parte' + last_parte + '_libro' + last_libro + '_titulo' + last_titulo
+			cad = 'libro' + last_libro + '_titulo' + last_titulo
 			id_parent = last_titulo_id
 			if last_subtitulo != '':
 				cad += "_subtitulo" + last_subtitulo
@@ -92,7 +86,7 @@ def __procesarParrafo(soup):
 			last_segmento_id = last_seccion_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_SECCION, ley_id, id_parent, cad)
 		elif hard_code_util.isSubSeccion(soup.text):
 			last_subseccion = numeracion
-			cad = 'parte' + last_parte + '_libro' + last_libro + '_titulo' + last_titulo
+			cad = 'libro' + last_libro + '_titulo' + last_titulo
 			id_parent = last_titulo_id
 			if last_subtitulo != '':
 				cad += "_subtitulo" + last_subtitulo
@@ -107,7 +101,7 @@ def __procesarParrafo(soup):
 			last_segmento_id = last_subseccion_id = dao.segmentoDAO.insert(str(soup), dao.segmentoDAO.TIPO_SUBSECCION, ley_id, id_parent, cad)
 	else:
 		if hard_code_util.isArticulo(soup.text):
-			cad = 'parte' + last_parte + '_libro' + last_libro + '_titulo' + last_titulo
+			cad = 'libro' + last_libro + '_titulo' + last_titulo
 			id_parent = last_titulo_id
 			if last_subtitulo != '':
 				cad += "_subtitulo" + last_subtitulo
@@ -137,15 +131,15 @@ def __procesarParrafo(soup):
 def procesarLegislacion(soup):
 	try:
 		global ley_id, end_of_code
-		id_ley = dao.leyDAO.selectIDSegmento(hard_code_util.ID_LEGISLACION_CODIGO_CIVIL)
+		id_ley = dao.leyDAO.selectIDSegmento(hard_code_util.ID_LEGISLACION_CODIGO_PROCESAL_CIVIL_1)
 		dao.segmentoDAO.deleteSegmentos(id_ley)
-		dao.leyDAO.deleteLey(hard_code_util.ID_LEGISLACION_CODIGO_CIVIL)
-		ley_id = dao.segmentoDAO.insert('<p align="left"><font face="Arial" color="#800000" size="2">Institui o Código Civil.</font></p>', dao.segmentoDAO.TIPO_LIBRO, None)
+		dao.leyDAO.deleteLey(hard_code_util.ID_LEGISLACION_CODIGO_PROCESAL_CIVIL_1)
+		ley_id = dao.segmentoDAO.insert('<p align="left"><font face="Arial" color="#800000" size="2">Institui o Código de Processo Civil.</font></p>', dao.segmentoDAO.TIPO_LIBRO, None)
 		logger.info('Segmento - Ley registrada correctamente, ID = ' + str(ley_id))
-		dao.leyDAO.insert('INSTITUI O CÓDIGO CIVIL', '', ley_id, datetime.now(), hard_code_util.ID_LEGISLACION_CODIGO_CIVIL)
+		dao.leyDAO.insert('INSTITUI O CÓDIGO DE PROCESSO CIVIL', '', ley_id, datetime.now(), hard_code_util.ID_LEGISLACION_CODIGO_PROCESAL_CIVIL_1)
 		logger.info('Ley registrada correctamente')
-		titulo = soup.find('p', {'style': 'text-indent: 30px'})
-		next = titulo.find_next('p')
+		titulo = soup.find('small')
+		next = titulo.find_next('p').find_next('p')
 		while next is not None:
 			__procesarParrafo(next)
 			next = next.find_next('p')
