@@ -4,9 +4,10 @@ from bs4 import BeautifulSoup
 ID_LEGISLACION_CONSTITUCION = 1
 ID_LEGISLACION_CODIGO_CIVIL = 2
 ID_LEGISLACION_CODIGO_PROCESAL_CIVIL_1 = 3
+ID_LEGISLACION_CODIGO_PROCESAL_CIVIL_2 = 4
 
 def isParte(text):
-	return text is not None and 'P A R T E' in text.encode('utf-8')
+	return text is not None and ('P A R T E' in text.encode('utf-8') or ('PARTE' in text.encode('utf-8') and 'PARTES' not in text.encode('utf-8')))
 
 def isLibro(text):
 	return text is not None and 'LIVRO' in text.encode('utf-8')

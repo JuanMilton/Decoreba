@@ -140,7 +140,7 @@ def procesarLegislacion(soup):
 		id_ley = dao.leyDAO.selectIDSegmento(hard_code_util.ID_LEGISLACION_CODIGO_CIVIL)
 		dao.segmentoDAO.deleteSegmentos(id_ley)
 		dao.leyDAO.deleteLey(hard_code_util.ID_LEGISLACION_CODIGO_CIVIL)
-		ley_id = dao.segmentoDAO.insert('<p align="left"><font face="Arial" color="#800000" size="2">Institui o Código Civil.</font></p>', dao.segmentoDAO.TIPO_LIBRO, None)
+		ley_id = dao.segmentoDAO.insert('<p align="left"><font face="Arial" color="#800000" size="2">Institui o Código Civil.</font></p>', dao.segmentoDAO.TIPO_LEY, None)
 		logger.info('Segmento - Ley registrada correctamente, ID = ' + str(ley_id))
 		dao.leyDAO.insert('INSTITUI O CÓDIGO CIVIL', '', ley_id, datetime.now(), hard_code_util.ID_LEGISLACION_CODIGO_CIVIL)
 		logger.info('Ley registrada correctamente')
