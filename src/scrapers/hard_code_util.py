@@ -30,7 +30,18 @@ def isSubSeccion(text):
 def isArticulo(text):
 	return text is not None and text.strip().startswith('Art.')
 
-def getNumeroTitular(text):
+def getNumeroTitular1(text):
+	if text is None:
+		return '0'
+	if isParte(text):
+		cad = text.replace(' ', '')
+		return cad.split()[1]
+	if len(text.split()) > 1:
+		return text.split()[1]
+	return None
+
+def getNumeroTitular2(text):
+	print text
 	if text is None:
 		return '0'
 	if len(text.split()) > 1:

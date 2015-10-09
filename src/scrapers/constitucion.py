@@ -33,12 +33,13 @@ def __separarTituloCompuesto(soup):
 	tags_a = soup.find_all(['a'])
 	tags_name = []
 	for item in tags_a:
-		if item.attrs['name'] is not None:
+		if item is not None and 'name' in item.attrs:
+			print item.attrs, '\n'
 			tags_name.append(item.attrs['name'])
 		else:
 			print 'ERROR, el tag no tiene un atributo nombre'
 			return []
-	if (len(tags_name) == 2):
+	if (len(tags_name) > 1):
 		if tags_name[0] == 'tituloii' and tags_name[1] == 'tituloiicapituloi':
 			logger.info('Excepcion procesada : tituloii - tituloiicapituoi')
 			tag1 = '<p align=\'center\'><font face=\'Arial\' size=\'2\'><a name=\'tituloii\'></a><span style=\'text-transform: uppercase\'><b>TÍTULO II<br>Dos Direitos e Garantias Fundamentais</b></span></font></p>'
@@ -59,6 +60,91 @@ def __separarTituloCompuesto(soup):
 			tag1 = '<p align="CENTER"><font face="Arial" size="2"><a name="tituloiiicapitulovii"></a>CAPÍTULO VII<br>DA ADMINISTRAÇÃO PÚBLICA</font></p>'
 			tag2 = '<p align="CENTER"><font face="Arial" size="2"><a name="tituloiiicapituloviisecaoi"></a><b><span style="text-transform: uppercase">Seção I<br>DISPOSIÇÕES GERAIS</span></b></font></p>'
 			return [(BeautifulSoup(tag1.decode('utf-8'))).p, (BeautifulSoup(tag2.decode("utf-8"))).p]
+		elif tags_name[0] == 'tituloiv' and tags_name[1] == 'tituloivcapituloi' and len(tags_name) == 3 and tags_name[2] == 'tituloivcapituloisecaoi':
+			logger.info('Excepcion procesada : tituloiv - tituloivcapituloi - tituloivcapituloisecaoi')
+			tag1 = '<p align="center"><font size="2"><a name="tituloiv."></a><font face="Arial"><b><span style="text-transform: uppercase">TÍTULO IV<br>DA ORGANIZAÇÃO DOS PODERES</span></b></font><br><a href="http://www.planalto.gov.br/ccivil_03/Constituicao/Emendas/Emc/emc80.htm#art1">(Redação dada pela Emenda Constitucional nº 80, de 2014)</a></font></p>'
+			tag2 = '<p align="center"><font face="Arial" size="2"><a name="tituloivcapituloi"></a>CAPÍTULO I<br>DO PODER LEGISLATIVO<br></font></p>'
+			tag3 = '<p align="center"><font face="Arial" size="2"><a name="tituloivcapituloisecaoi"></a><b><span style="text-transform: uppercase">Seção I<br>DO CONGRESSO NACIONAL</span></b></font></p>'
+			return [(BeautifulSoup(tag1.decode('utf-8'))).p, (BeautifulSoup(tag2.decode("utf-8"))).p, (BeautifulSoup(tag3.decode("utf-8"))).p]
+		elif tags_name[0] == 'tituloivcapituloisecaoviii' and tags_name[1] == 'tituloivcapituloisecaoviiisubsecaoi':
+			logger.info('Excepcion procesada : tituloivcapituloisecaoviii - tituloivcapituloisecaoviiisubsecaoi')
+			tag1 = '<p align="CENTER"><a name="tituloivcapituloisecaoviii"></a>&nbsp;<a name="sviii"></a><font face="Arial" size="2"><b><span style="text-transform: uppercase">Seção VIII<br>DO PROCESSO LEGISLATIVO</span></b></font></p>'
+			tag2 = '<p align="CENTER"><a name="tituloivcapituloisecaoviiisubsecaoi"></a><b><span style="text-transform: uppercase">Subseção I<br>Disposição Geral</span></b></font></p>'
+			return [(BeautifulSoup(tag1.decode('utf-8'))).p, (BeautifulSoup(tag2.decode("utf-8"))).p]
+		elif tags_name[0] == 'tituloivcapituloii' and tags_name[1] == 'tituloivcapituloiisecaoi':
+			logger.info('Excepcion procesada : tituloivcapituloii - tituloivcapituloiisecaoi')
+			tag1 = '<p align="CENTER"><font face="Arial" size="2"><a name="tituloivcapituloii"></a>CAPÍTULO II<br>DO PODER EXECUTIVO</font></p>'
+			tag2 = '<p align="CENTER"><font face="Arial" size="2"><a name="tituloivcapituloiisecaoi"></a><b><span style="text-transform: uppercase">Seção I<br>DO PRESIDENTE E DO VICE-PRESIDENTE DA REPÚBLICA</span></b></font></p>'
+			return [(BeautifulSoup(tag1.decode('utf-8'))).p, (BeautifulSoup(tag2.decode("utf-8"))).p]
+		elif tags_name[0] == 'tituloivcapituloiisecaov' and tags_name[1] == 'tituloivcapituloiisecaovsubsecaoi':
+			logger.info('Excepcion procesada : tituloivcapituloiisecaov - tituloivcapituloiisecaovsubsecaoi')
+			tag1 = '<p align="CENTER"><font face="Arial" size="2"><a name="tituloivcapituloiisecaov"></a><b><span style="text-transform: uppercase">Seção V<br>DO CONSELHO DA REPÚBLICA E DO CONSELHO DE DEFESA NACIONAL</span></b></font></p>'
+			tag2 = '<p align="CENTER"><font face="Arial" size="2"><a name="tituloivcapituloiisecaovsubsecaoi"></a><b><span style="text-transform: uppercase">Subseção I<br>Do Conselho da República</span></b></font></p>'
+			return [(BeautifulSoup(tag1.decode('utf-8'))).p, (BeautifulSoup(tag2.decode("utf-8"))).p]
+		elif tags_name[0] == 'tituloivcapituloiii' and tags_name[1] == 'tituloivcapituloiiisecaoi':
+			logger.info('Excepcion procesada : tituloivcapituloiii - tituloivcapituloiiisecaoi')
+			tag1 = '<p align="CENTER"><font face="Arial" size="2"><a name="tituloivcapituloiii"></a>CAPÍTULO III<br>DO PODER JUDICIÁRIO<br></font></p>'
+			tag2 = '<p align="CENTER"><font face="Arial" size="2"><a name="tituloivcapituloiiisecaoi"></a><b><span style="text-transform: uppercase">Seção I<br>DISPOSIÇÕES GERAIS</span></b></font></p>'
+			return [(BeautifulSoup(tag1.decode('utf-8'))).p, (BeautifulSoup(tag2.decode("utf-8"))).p]
+		elif tags_name[0] == 'tituloivcapituloiv.' and tags_name[1] == 'tituloivcapituloivsecaoi':
+			logger.info('Excepcion procesada : tituloivcapituloiv. - tituloivcapituloivsecaoi')
+			tag1 = '<p align="CENTER"><font size="2"><a name="tituloivcapituloiv."></a>CAPÍTULO IV<br>DAS FUNÇÕES ESSENCIAIS À JUSTIÇA<br><a href="http://www.planalto.gov.br/ccivil_03/Constituicao/Emendas/Emc/emc80.htm#art1">(Redação dada pela Emenda Constitucional nº 80, de 2014)</a></font></p>'
+			tag2 = '<p align="CENTER"><font face="Arial" size="2"><br><a name="tituloivcapituloivsecaoi"></a><b><span style="text-transform: uppercase">Seção I<br>DO MINISTÉRIO PÚBLICO</span></b></font></p>'
+			return [(BeautifulSoup(tag1.decode('utf-8'))).p, (BeautifulSoup(tag2.decode("utf-8"))).p]
+		elif tags_name[0] == 'titulov' and tags_name[1] == 'titulovcapituloi' and len(tags_name) == 3 and tags_name[2] == 'titulovcapituloisecaoi':
+			logger.info('Excepcion procesada : titulov - titulovcapituloi - titulovcapituloisecaoi')
+			tag1 = '<p align="center"><font face="Arial" size="2"><a name="titulov"></a><b><span style="text-transform: uppercase">TÍTULO V<br>Da Defesa do Estado e Das Instituições Democráticas </span></b></font></p>'
+			tag2 = '<p align="center"><font face="Arial" size="2"><a name="titulovcapituloi"></a>CAPÍTULO I<br>DO ESTADO DE DEFESA E DO ESTADO DE SÍTIO<br></font></p>'
+			tag3 = '<p align="center"><font face="Arial" size="2"><a name="titulovcapituloisecaoi"></a><b><span style="text-transform: uppercase">Seção I<br>DO ESTADO DE DEFESA</span></b></font></p>'
+			return [(BeautifulSoup(tag1.decode('utf-8'))).p, (BeautifulSoup(tag2.decode("utf-8"))).p, (BeautifulSoup(tag3.decode("utf-8"))).p]
+		elif tags_name[0] == 'titulovi' and tags_name[1] == 'titulovicapituloi' and len(tags_name) == 3 and tags_name[2] == 'titulovicapituloisecaoi':
+			logger.info('Excepcion procesada : titulovi - titulovicapituloi - titulovicapituloisecaoi')
+			tag1 = '<p align="center"><font face="Arial" color="#000000" size="3"><a name="titulovi"></a></font><font face="Arial" size="2"><b><span style="text-transform: uppercase">TÍTULO VI<br>Da Tributação e do Orçamento</span></b></font></p>'
+			tag2 = '<p align="center"><font face="Arial" color="#000000" size="3"><br></font><font face="Arial" size="2"><a name="titulovicapituloi"></a>CAPÍTULO I<br>DO SISTEMA TRIBUTÁRIO NACIONAL<br></font></p>'
+			tag3 = '<p align="center"><font face="Arial" color="#000000" size="3"><br></font><font face="Arial" size="2"><a name="titulovicapituloisecaoi"></a><b><span style="text-transform: uppercase">Seção I<br>DOS PRINCÍPIOS GERAIS</span></b></font></p>'
+			return [(BeautifulSoup(tag1.decode('utf-8'))).p, (BeautifulSoup(tag2.decode("utf-8"))).p, (BeautifulSoup(tag3.decode("utf-8"))).p]
+		elif tags_name[0] == 'titulovicapituloii' and tags_name[1] == 'titulovicapituloiisecaoi':
+			logger.info('Excepcion procesada : titulovicapituloii. - titulovicapituloiisecaoi')
+			tag1 = '<p align="CENTER"><font face="Arial" size="2"><a name="titulovicapituloii"></a>CAPÍTULO II<br>DAS FINANÇAS PÚBLICAS<br></font></p>'
+			tag2 = '<p align="CENTER"><font face="Arial" size="2"><a name="titulovicapituloiisecaoi"></a><b><span style="text-transform: uppercase">Seção I<br>NORMAS GERAIS</span></b></font></p>'
+			return [(BeautifulSoup(tag1.decode('utf-8'))).p, (BeautifulSoup(tag2.decode("utf-8"))).p]
+		elif tags_name[0] == 'titulovii' and tags_name[1] == 'tituloviicapituloi':
+			logger.info('Excepcion procesada : titulovii. - tituloviicapituloi')
+			tag1 = '<p align="center"><font face="Arial" size="2"><a name="titulovii"></a><b><span style="text-transform: uppercase">TÍTULO VII<br>Da Ordem Econômica e Financeira </span></b> <br></font></p>'
+			tag2 = '<p align="center"><font face="Arial" size="2"><a name="tituloviicapituloi"></a>CAPÍTULO I<br>DOS PRINCÍPIOS GERAIS DA ATIVIDADE ECONÔMICA</font></p>'
+			return [(BeautifulSoup(tag1.decode('utf-8'))).p, (BeautifulSoup(tag2.decode("utf-8"))).p]
+		elif tags_name[0] == 'tituloviii' and tags_name[1] == 'tituloviiicapituloi':
+			logger.info('Excepcion procesada : titulovii. - tituloviiicapituloi')
+			tag1 = '<p align="center"><font face="Arial" color="#000000" size="3"><a name="tituloviii"></a></font><font face="Arial" size="2"><b><span style="text-transform: uppercase">TÍTULO VIII<br>Da Ordem Social</span></b></font></p>'
+			tag2 = '<p align="center"><font face="Arial" color="#000000" size="3"><br></font><font face="Arial" size="2"><a name="tituloviiicapituloi"></a>CAPÍTULO I<br>DISPOSIÇÃO GERAL</font></p>'
+			return [(BeautifulSoup(tag1.decode('utf-8'))).p, (BeautifulSoup(tag2.decode("utf-8"))).p]
+		elif tags_name[0] == 'tituloviiicapituloii' and tags_name[1] == 'tituloviiiCapii':
+			logger.info('Excepcion procesada : tituloviiicapituloii - tituloviiiCapii')
+			tag1 = '<p align="CENTER"><a name="tituloviiicapituloii"></a>&nbsp;</a><font face="Arial" size="2">CAPÍTULO II<br>DA SEGURIDADE SOCIAL<br></p>'
+			tag2 = '<p align="CENTER"><a name="tituloviiicapituloiisecaoi"></a><b><span style="text-transform: uppercase">Seção I<br>DISPOSIÇÕES GERAIS</span></b></p>'
+			return [(BeautifulSoup(tag1.decode('utf-8'))).p, (BeautifulSoup(tag2.decode("utf-8"))).p]
+		elif tags_name[0] == 'tituloviiicapituloiii' and tags_name[1] == 'tituloviiicapituloiiisecaoi':
+			logger.info('Excepcion procesada : tituloviiicapituloiii - tituloviiicapituloiiisecaoi')
+			tag1 = '<p align="CENTER"><font face="Arial" size="2"><a name="tituloviiicapituloiii"></a>CAPÍTULO III<br>DA EDUCAÇÃO, DA CULTURA E DO DESPORTO<br></font></p>'
+			tag2 = '<p align="CENTER"><font face="Arial" size="2"><a name="tituloviiicapituloiiisecaoi"></a><b><span style="text-transform: uppercase">Seção I<br>DA EDUCAÇÃO</span></b></font></p>'
+			return [(BeautifulSoup(tag1.decode('utf-8'))).p, (BeautifulSoup(tag2.decode("utf-8"))).p]
+		elif tags_name[0] == 'tituloivcapituloisecaoviii' and tags_name[1] == 'sviii':
+			logger.info('Excepcion procesada : tituloivcapituloisecaoviii - sviii')
+			tag1 = '<p align="CENTER"><a name="tituloivcapituloisecaoviii"></a>&nbsp;<font face="Arial" size="2"><b><span style="text-transform: uppercase">Seção VIII<br>DO PROCESSO LEGISLATIVO</span></b><br></font></p>'
+			tag2 = '<p align="CENTER"><a name="tituloivcapituloisecaoviiisubsecaoi"></a><b><span style="text-transform: uppercase">Subseção I<br>Disposição Geral</span></b></font></p>'
+			return [(BeautifulSoup(tag1.decode('utf-8'))).p, (BeautifulSoup(tag2.decode("utf-8"))).p]
+		elif tags_name[0] == 'tituloivcapituloiv' and tags_name[1] == 'tit.ivcap.iv':
+			logger.info('Excepcion procesada : tituloivcapituloiv - tit.ivcap.iv')
+			tag1 = '<p align="CENTER"><strike><font face="Arial" size="2"><a name="tituloivcapituloiv"></a>&nbsp;</a>CAPÍTULO IV<br>DAS FUNÇÕES ESSENCIAIS À JUSTIÇA</font></strike></p>'
+			return [(BeautifulSoup(tag1.decode('utf-8'))).p]
+		elif tags_name[0] == 'titulox' and tags_name[1] == 'adct':
+			logger.info('Excepcion procesada : titulox - adct')
+			tag1 = '<p align="center"><font face="Arial" size="2"><b><span style="text-transform: uppercase"><a name="titulox"></a>TÍTULO X<br></a>ATO DAS DISPOSIÇÕES CONSTITUCIONAIS TRANSITÓRIAS</span></b></font></p>'
+			return [(BeautifulSoup(tag1.decode('utf-8'))).p]
+		else:
+			print soup, '\n\n'
+			return [soup]
+
 
 def __isTitulo(soup):
 	attrs = soup.attrs
@@ -82,6 +168,7 @@ def __procesarParrafo(soup):
 	if (__isTitulo(soup)):
 		if (__isTituloCompuesto(soup)):
 			resp = __separarTituloCompuesto(soup) # resp es una lista de partes, cada parte es un tag
+			print resp, '\n'
 			for p in resp:
 				__procesarParrafo(p)
 		else :
@@ -89,7 +176,7 @@ def __procesarParrafo(soup):
 				dao.segmentoDAO.insert(articulo_completo, dao.segmentoDAO.TIPO_ARTICULO, ley_id, id_parent_articulo, idnetificador_articulo)
 				idnetificador_articulo = ''
 				articulo_completo = ''
-			numeracion = hard_code_util.getNumeroTitular(soup.text)
+			numeracion = hard_code_util.getNumeroTitular1(soup.text)
 			if hard_code_util.isTitulo(soup.text):
 				last_titulo = last_capitulo = last_seccion = last_subseccion = ''
 				last_titulo = numeracion
@@ -165,13 +252,12 @@ def procesarLegislacion(soup):
 		id_ley = dao.leyDAO.selectIDSegmento(hard_code_util.ID_LEGISLACION_CONSTITUCION)
 		dao.segmentoDAO.deleteSegmentos(id_ley)
 		dao.leyDAO.deleteLey(hard_code_util.ID_LEGISLACION_CONSTITUCION)
-		ley_id = dao.segmentoDAO.insert('<p align="center"><a href="https://legislacao.planalto.gov.br/legisla/legislacao.nsf/viwTodos/509f2321d97cd2d203256b280052245a?OpenDocument&amp;Highlight=1,constitui%C3%A7%C3%A3o&amp;AutoFramed"><font face="Arial" color="#0000FF" size="2"><b>CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL DE 1988</b></font></a></p>', dao.segmentoDAO.TIPO_LEY, None)
+		ley_id = dao.segmentoDAO.insert('<p align="center"><a href="https://legislacao.planalto.gov.br/legisla/legislacao.nsf/viwTodos/509f2321d97cd2d203256b280052245a?OpenDocument&amp;Highlight=1,constitui%C3%A7%C3%A3o&amp;AutoFramed"><font face="Arial" color="#0000FF" size="2"><b>CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL DE 1988</b></font></a></p>', dao.segmentoDAO.TIPO_LEY, None, None, '')
 		logger.info('Segmento - Ley registrada correctamente, ID = ' + str(ley_id))
 		dao.leyDAO.insert('CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL DE 1988', '', ley_id, datetime.now(), hard_code_util.ID_LEGISLACION_CONSTITUCION)
 		logger.info('Ley registrada correctamente')
 		soup_inicial = readPreambulo(soup)
 		#titulo = soup.find('p', {'align': 'center'})
-		print soup_inicial,'\n'
 		next = soup_inicial
 		while next is not None:
 			__procesarParrafo(next)

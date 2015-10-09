@@ -52,7 +52,7 @@ def __procesarParrafo(soup):
 			dao.segmentoDAO.insert(articulo_completo, dao.segmentoDAO.TIPO_ARTICULO, ley_id, id_parent_articulo, idnetificador_articulo)
 			idnetificador_articulo = ''
 			articulo_completo = ''
-		numeracion = hard_code_util.getNumeroTitular(soup.text)
+		numeracion = hard_code_util.getNumeroTitular2(soup.text)
 		if hard_code_util.isParte(soup.text):
 			last_libro = last_titulo = last_subtitulo = last_capitulo = last_seccion = last_subseccion = ''
 			last_parte = numeracion
@@ -171,7 +171,7 @@ def procesarLegislacion(soup):
 		id_ley = dao.leyDAO.selectIDSegmento(hard_code_util.ID_LEGISLACION_CODIGO_PROCESAL_CIVIL_2)
 		dao.segmentoDAO.deleteSegmentos(id_ley)
 		dao.leyDAO.deleteLey(hard_code_util.ID_LEGISLACION_CODIGO_PROCESAL_CIVIL_2)
-		ley_id = dao.segmentoDAO.insert('<p align="left"><font face="Arial" color="#800000" size="2">Institui o Código de Processo Civil.</font></p>', dao.segmentoDAO.TIPO_LEY, None)
+		ley_id = dao.segmentoDAO.insert('<p align="left"><font face="Arial" color="#800000" size="2">Institui o Código de Processo Civil.</font></p>', dao.segmentoDAO.TIPO_LEY, None, None, 'L13105')
 		logger.info('Segmento - Ley registrada correctamente, ID = ' + str(ley_id))
 		dao.leyDAO.insert('INSTITUI O CÓDIGO DE PROCESSO CIVIL', '', ley_id, datetime.now(), hard_code_util.ID_LEGISLACION_CODIGO_PROCESAL_CIVIL_2)
 		logger.info('Ley registrada correctamente')
